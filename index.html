@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="آزمون خودشناسی سبک رفتاری بر پایه مدل DISC">
+<title>آزمون شخصیت‌شناسی DISC</title>
+<style>
+:root{--ink:#172033;--muted:#64748b;--line:#e5eaf2;--bg:#f5f7fb;--blue:#3157d5;--card:#fff}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Tahoma,Arial,sans-serif;line-height:1.9}
+main{max-width:850px;margin:32px auto;padding:0 16px}.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:26px;box-shadow:0 10px 35px #1720330b}
+.hero{background:linear-gradient(135deg,#172554,#3157d5);color:white;border:0}.hero p{color:#e0e7ff}.eyebrow{font-size:13px;opacity:.8}.hero h1{font-size:clamp(26px,5vw,40px);line-height:1.4;margin:8px 0}
+h2{font-size:22px;margin:0 0 12px}p{margin:8px 0}.muted{color:var(--muted)}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{display:flex;flex-direction:column;gap:5px;margin:12px 0}.field input{padding:13px;border:1px solid var(--line);border-radius:10px;font:inherit}
+button{border:0;border-radius:12px;padding:13px 20px;font:inherit;font-weight:bold;cursor:pointer;background:var(--blue);color:white}.secondary{background:#eef2ff;color:#243b8f}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.progress{height:8px;background:#e8edf6;border-radius:99px;overflow:hidden;margin:12px 0 22px}.bar{height:100%;background:var(--blue);width:0;transition:.2s}
+.q{padding:17px 0;border-bottom:1px solid var(--line)}.q:last-child{border:0}.q strong{display:block;margin-bottom:10px}.scale{display:flex;gap:8px;flex-wrap:wrap}.scale label{flex:1;min-width:90px;border:1px solid var(--line);border-radius:10px;padding:8px;text-align:center;font-size:13px;cursor:pointer}.scale input{accent-color:var(--blue)}.hidden{display:none}
+.result-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:18px 0}.score{border:1px solid var(--line);border-radius:14px;padding:14px}.score b{font-size:24px}.track{height:9px;background:#edf0f6;border-radius:9px;margin-top:8px;overflow:hidden}.fill{height:100%;border-radius:9px}
+.notice{background:#fff8e6;border:1px solid #f3dfad;border-radius:12px;padding:13px;font-size:13px;color:#71551a}
+@media(max-width:600px){main{margin:14px auto}.card{padding:18px}.grid,.result-grid{grid-template-columns:1fr}.scale label{min-width:42%;}}
+@media print{body{background:white}.card{box-shadow:none}.actions,#intro,#quiz{display:none!important}#result{display:block!important}}
+</style></head>
+<body><main>
+<section id="intro" class="card hero">
+<div class="eyebrow">ابزار خودشناسی رفتاری</div><h1>آزمون شخصیت‌شناسی DISC</h1>
+<p>با پاسخ به ۲۸ عبارت، تصویری از ترجیحات رفتاری خود در چهار بُعد D، I، S و C به دست بیاورید.</p>
+<p>زمان تقریبی: ۵ تا ۷ دقیقه</p>
+<div class="actions"><button onclick="startTest()">شروع آزمون</button></div>
+</section>
+<section id="quiz" class="card hidden">
+<div class="grid"><div><b>آزمون DISC</b><div class="muted" id="counter">سؤال ۱ از ۲۸</div></div><div class="muted" style="text-align:left" id="pct">۰٪</div></div>
+<div class="progress"><div class="bar" id="bar"></div></div>
+<div id="questions"></div>
+<div class="actions"><button class="secondary" id="prev" onclick="move(-1)">قبلی</button><button id="next" onclick="move(1)">بعدی</button></div>
+</section>
+<section id="result" class="card hidden">
+<div class="eyebrow muted">گزارش شخصی شما</div><h1 style="margin:0">نتیجه آزمون DISC</h1><p id="hello" class="muted"></p>
+<h2 id="dominant"></h2><p id="summary"></p>
+<div class="result-grid" id="scores"></div>
+<h2>تفسیر رفتاری</h2><p id="detail"></p>
+<h2>نقاط قوت احتمالی</h2><p id="strengths"></p>
+<h2>نکته‌هایی برای رشد</h2><p id="growth"></p>
+<h2>سبک ارتباطی پیشنهادی</h2><p id="communication"></p>
+<div class="notice">این پرسش‌نامه یک ابزار آموزشی و خودشناسیِ طراحی‌شده بر پایه چارچوب DISC است؛ آزمون روان‌سنجیِ هنجاریابی‌شده یا ابزار تشخیص بالینی نیست. نتیجه به پاسخ‌های خوداظهاری و شرایط فعلی شما وابسته است.</div>
+<div class="actions"><button onclick="window.print()">چاپ / ذخیره PDF</button><button class="secondary" onclick="location.reload()">اجرای دوباره</button></div>
+</section>
+</main>
+<script>
+const items=[
+["وقتی مسئله‌ای پیش می‌آید، سریع تصمیم می‌گیرم و وارد عمل می‌شوم.","D"],["در جمع‌ها به‌راحتی سر صحبت را باز می‌کنم.","I"],["ترجیح می‌دهم محیطی آرام، باثبات و قابل پیش‌بینی داشته باشم.","S"],["پیش از تحویل کار، جزئیات را با دقت بررسی می‌کنم.","C"],
+["از رقابت و رسیدن به هدف‌های دشوار انرژی می‌گیرم.","D"],["می‌توانم دیگران را با اشتیاق و بیانم همراه کنم.","I"],["شنونده‌ای صبور هستم و به دیگران فرصت می‌دهم.","S"],["برای انجام کارها به معیارها و دستورالعمل روشن نیاز دارم.","C"],
+["در شرایط فشار، قاطعانه مسیر را مشخص می‌کنم.","D"],["از آشنا شدن با افراد تازه لذت می‌برم.","I"],["وفاداری و همکاری بلندمدت برایم مهم است.","S"],["اشتباه‌ها و ناهماهنگی‌ها سریع توجهم را جلب می‌کنند.","C"],
+["ترجیح می‌دهم اختیار تصمیم‌گیری و استقلال داشته باشم.","D"],["معمولاً با خوش‌بینی و انرژی به استقبال تغییر می‌روم.","I"],["در تغییرات ناگهانی، ابتدا به زمان نیاز دارم تا سازگار شوم.","S"],["قبل از تصمیم مهم، اطلاعات و شواهد را جمع‌آوری می‌کنم.","C"],
+["اگر لازم باشد، مخالفت خود را مستقیم بیان می‌کنم.","D"],["در متقاعد کردن و ایجاد انگیزه در دیگران توانمندم.","I"],["از کمک کردن و حمایت عملی از همکاران لذت می‌برم.","S"],["کیفیت و درست انجام شدن کار برایم از سرعت مهم‌تر است.","C"],
+["روی نتیجه تمرکز می‌کنم و موانع را به چشم چالش می‌بینم.","D"],["بیان احساسات و نشان دادن هیجان برایم آسان است.","I"],["در اختلاف‌ها معمولاً به دنبال تفاهم و هماهنگی هستم.","S"],["کارهای ساختارمند و برنامه‌ریزی‌شده را ترجیح می‌دهم.","C"],
+["وقتی هدف روشن باشد، ریسک حساب‌شده را می‌پذیرم.","D"],["از دیده شدن و ارائه ایده‌ها در جمع استقبال می‌کنم.","I"],["ثبات، امنیت و پیشرفت تدریجی برایم ارزشمند است.","S"],["برای تصمیم‌گیری، مزایا و معایب را منطقی مقایسه می‌کنم.","C"]
+];
+const names={D:"غالب / نتیجه‌گرا",I:"تأثیرگذار / ارتباط‌گرا",S:"ثبات‌گرا / حمایت‌گر",C:"تحلیل‌گر / وظیفه‌گرا"};
+const desc={
+D:["معمولاً مستقیم، قاطع، هدف‌محور و علاقه‌مند به پیشرفت سریع هستید.","تصمیم‌گیری، جسارت، حل مسئله و پیشبرد کارها.","شتاب‌زدگی، کم‌حوصلگی نسبت به جزئیات یا نادیده گرفتن نظر دیگران.","پیام‌ها را کوتاه، روشن و همراه با هدف و اختیار بیان کنید."],
+I:["معمولاً پرانرژی، خوش‌بیان، اجتماعی و مشتاق تعامل و اثرگذاری هستید.","ارتباط‌سازی، ایجاد انگیزه، خوش‌بینی و ارائه ایده‌ها.","پیگیری جزئیات، پراکندگی تمرکز یا تصمیم‌گیری عجولانه.","فضایی تعاملی و مثبت ایجاد کنید و نکات کلیدی را مکتوب نگه دارید."],
+S:["معمولاً صبور، قابل اتکا، همدل و علاقه‌مند به همکاری و ثبات هستید.","گوش دادن، حمایت از تیم، وفاداری و ایجاد هماهنگی.","سختی در نه گفتن، مقاومت در برابر تغییر یا عقب انداختن تعارض‌ها.","با احترام و آرامش ارتباط بگیرید و برای تغییرات فرصت سازگاری بدهید."],
+C:["معمولاً دقیق، منطقی، منظم و متمرکز بر کیفیت و استانداردها هستید.","تحلیل، برنامه‌ریزی، دقت، کنترل کیفیت و تصمیم مبتنی بر داده.","کمال‌گرایی، تحلیل بیش از حد یا احتیاط زیاد در ابهام.","اطلاعات، معیارها و انتظارات روشن و مستند ارائه کنید."]
+};
+let page=0,answers=Array(items.length).fill(null),person="";
+const fa=n=>new Intl.NumberFormat('fa-IR').format(n);
+function startTest(){document.getElementById('intro').classList.add('hidden');document.getElementById('quiz').classList.remove('hidden');render()}
+function render(){const start=page*4,end=Math.min(start+4,items.length);document.getElementById('counter').textContent='سؤال‌های '+fa(start+1)+' تا '+fa(end)+' از '+fa(items.length);document.getElementById('pct').textContent=fa(Math.round(end/items.length*100))+'٪';document.getElementById('bar').style.width=(end/items.length*100)+'%';
+document.getElementById('questions').innerHTML=items.slice(start,end).map((it,j)=>{let idx=start+j;return '<div class="q"><strong>'+fa(idx+1)+'. '+it[0]+'</strong><div class="scale">'+['اصلاً شبیه من نیست','کمتر شبیه من است','تا حدی شبیه من است','زیاد شبیه من است','کاملاً شبیه من است'].map((t,v)=>'<label><input type="radio" name="q'+idx+'" value="'+(v+1)+'" '+(answers[idx]===v+1?'checked':'')+' onchange="answers['+idx+']='+(v+1)+'"> '+t+'</label>').join('')+'</div></div>'}).join('');
+document.getElementById('prev').style.visibility=page===0?'hidden':'visible';document.getElementById('next').textContent=end===items.length?'مشاهده نتیجه':'بعدی'}
+function move(d){let start=page*4,end=Math.min(start+4,items.length);if(d>0&&answers.slice(start,end).some(x=>x===null)){alert('لطفاً به همه عبارت‌های این بخش پاسخ دهید.');return}if(d<0&&page===0)return;if(d>0&&end===items.length){showResult();return}page+=d;render();window.scrollTo({top:0,behavior:'smooth'})}
+function showResult(){const scores={D:0,I:0,S:0,C:0};items.forEach((x,i)=>scores[x[1]]+=answers[i]);const sorted=Object.entries(scores).sort((a,b)=>b[1]-a[1]);const top=sorted[0][0],second=sorted[1][0];document.getElementById('quiz').classList.add('hidden');document.getElementById('result').classList.remove('hidden');
+document.getElementById('dominant').textContent='سبک برجسته شما: '+names[top];document.getElementById('summary').textContent='بالاترین امتیاز شما در بُعد '+top+' است و پس از آن بُعد '+second+' قرار دارد. این ترکیب می‌تواند تصویری از ترجیحات رفتاری شما ارائه دهد؛ هر چهار بُعد در همه افراد وجود دارند.';
+document.getElementById('scores').innerHTML=sorted.map(([k,v])=>'<div class="score"><b>'+k+' — '+fa(v)+'/۳۵</b><div>'+names[k]+'</div><div class="track"><div class="fill" style="width:'+((v/35)*100)+'%;background:'+({D:'#dc6262',I:'#e3ad3e',S:'#36a58b',C:'#6685d8'}[k])+'"></div></div></div>').join('');
+document.getElementById('detail').textContent=desc[top][0]+' در عین حال، بُعد '+second+' نیز می‌تواند در موقعیت‌های خاص بر رفتار شما اثر بگذارد.';
+document.getElementById('strengths').textContent=desc[top][1];document.getElementById('growth').textContent=desc[top][2];document.getElementById('communication').textContent=desc[top][3];window.scrollTo({top:0,behavior:'smooth'})}
+</script></body></html>
